@@ -61,3 +61,5 @@ class Models:
         if self.verbose:
             print(f"Diarized in {time.time() - t0:.2f} seconds.")
         return res
+
+models = Models(verbose=True)
