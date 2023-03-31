@@ -1,9 +1,9 @@
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="automeeting-notes",
-    packages=["automeeting_notes"],
+    packages=find_packages(),
     version="1.0",
     description="An Python webui for generating speaker-diarized meeting transcriptions from audio recordings",
     readme="README.md",
