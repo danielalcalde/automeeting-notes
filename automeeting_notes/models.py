@@ -17,6 +17,8 @@ class Models:
         self.verbose = verbose
 
     def load_whisper_model(self, model_name):
+
+        del self._whisper_model
         self._whisper_model = load_model(model_name, device=self.device)
 
     def load_pyannote_pipeline(self):
