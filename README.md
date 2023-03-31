@@ -1,6 +1,5 @@
 # AutoMeeting Notes
-An Python webui for generating speaker-diarized meeting transcriptions from audio recordings
-Leveraging a state-of-the-art speech-to-text model (whisper) and speaker diarization techniques (pyannote), the library delivers a comprehensive transcript that accurately differentiates between various speakers in a meeting or conversation. With support for multiple languages and an optional command line user interface, AutoMeeting Notes streamlines the transcription process.
+A Python web UI for generating speaker-diarized meeting transcriptions from audio recordings. Utilizing the state-of-the-art Whisper speech-to-text model and Pyannote speaker diarization techniques, the library produces precise transcripts that accurately differentiate between speakers in a meeting or conversation. With multi-language support and an optional command-line interface, AutoMeeting Notes simplifies the transcription process.
 
 ## Key Features
 
