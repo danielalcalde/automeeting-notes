@@ -53,7 +53,7 @@ css = """
                              }
                          """
 
-def webui():
+def webui(*args, **kwargs):
     # Define input and output components
     
     # Choose a model
@@ -87,4 +87,4 @@ def webui():
                         inputs=[audio_input, check_box_verbose, models, transcript_format],
                         outputs=[text_output])
 
-    demo.launch()
+    demo.launch(*args, **kwargs)
