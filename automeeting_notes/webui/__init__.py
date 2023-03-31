@@ -1,7 +1,4 @@
 import os
-
-import numpy as np
-import torch
 import gradio as gr
 
 from whisper import available_models
@@ -14,7 +11,7 @@ def transcribe_and_diarize(audio_path, verbose, model, transcript_format):
     # if audio is not wav, convert it with ffmpeg
     if not audio_path.endswith(".wav"):
         audio_path_new = audio_path + ".wav"
-        os.system(f"ffmpeg -i {audio_path} -acodec pcm_s16le -ac 1 -ar 16000 {audio_path_new}")
+        os.system(f"ffmpeg -y -i {audio_path} -acodec pcm_s16le -ac 1 -ar 16000 {audio_path_new}")
         try:
             os.remove(audio_path)
         except OSError:
@@ -22,10 +19,10 @@ def transcribe_and_diarize(audio_path, verbose, model, transcript_format):
         
         audio_path = audio_path_new
 
-    models.load_whisper_model(model)
+    models.models.load_whisper_model(model)
     
     args['verbose'] = verbose
-    models.verbose = verbose
+    models.models.verbose = verbose
 
     result = models.models.transcribe(audio_path, temperature=0.7, **args)
     diarization_result = models.models.pyannote_pipeline(audio_path)
