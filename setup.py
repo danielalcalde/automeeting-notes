@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="automeeting-notes",
-    py_modules=["automeeting_notes", "automeeting_notes_webui"],
+    py_modules=["automeeting_notes"],
     version="1.0",
     description="An Python webui for generating speaker-diarized meeting transcriptions from audio recordings",
     readme="README.md",
