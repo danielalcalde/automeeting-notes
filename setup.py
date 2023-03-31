@@ -5,7 +5,7 @@ setup(
     name="automeeting-notes",
     py_modules=["automeeting_notes", "automeeting_notes_webui"],
     version="1.0",
-    description="Speech Recognition and diarization to transcribe meetings",
+    description="An Python webui for generating speaker-diarized meeting transcriptions from audio recordings",
     readme="README.md",
     python_requires=">=3.7",
     author="danielalcalde",
