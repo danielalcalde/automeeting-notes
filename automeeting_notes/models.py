@@ -6,8 +6,6 @@ from whisper import load_model
 import time
 
 class Models:
-    _whisper_model = None
-    _pyannote_pipeline = None
 
     def __init__(self, whisper_model_name="large", device=None, verbose=False):
         self.whisper_model_name = whisper_model_name
@@ -15,6 +13,8 @@ class Models:
             device = "cuda" if torch.cuda.is_available() else "cpu"
         self.device = device
         self.verbose = verbose
+        self._whisper_model = None
+        self._pyannote_pipeline = None
 
     def load_whisper_model(self, model_name):
 

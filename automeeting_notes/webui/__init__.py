@@ -11,7 +11,7 @@ def transcribe_and_diarize(audio_path, verbose, model, transcript_format):
     # if audio is not wav, convert it with ffmpeg
     if not audio_path.endswith(".wav"):
         audio_path_new = audio_path + ".wav"
-        os.system(f"ffmpeg -y -i {audio_path} -acodec pcm_s16le -ac 1 -ar 16000 {audio_path_new}")
+        os.system(f"ffmpeg -y -i '{audio_path}' -acodec pcm_s16le -ac 1 -ar 16000 '{audio_path_new}'")
         try:
             os.remove(audio_path)
         except OSError:
