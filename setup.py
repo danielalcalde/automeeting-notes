@@ -12,5 +12,5 @@ setup(
     url="https://github.com/danielalcalde/automeeting-notes",
     license="MIT",
     scripts=["automeeting", "automeeting-webui"],
-    install_requires=["numpy", "torch>=1.8.0", "torchvision", "openai-whisper", "pyannote.audio", "gradio"]
+    install_requires=["numpy", "torch>=1.8.0", "torchvision", "openai-whisper", "pyannote.audio", "gradio<4.0"]
 )

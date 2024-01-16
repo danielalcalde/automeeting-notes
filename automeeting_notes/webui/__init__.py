@@ -25,7 +25,7 @@ def transcribe_and_diarize(audio_path, verbose, model, transcript_format):
     models.models.verbose = verbose
 
     result = models.models.transcribe(audio_path, temperature=0.7, **args)
-    diarization_result = models.models.pyannote_pipeline(audio_path)
+    diarization_result = models.models.diarize(audio_path)
 
     try:
         os.remove(audio_path)

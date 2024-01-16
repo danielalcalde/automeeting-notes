@@ -1,12 +1,9 @@
 import torch
-from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 from whisper.transcribe import transcribe
-from whisper.utils import WriteTXT, optional_float, optional_int, str2bool
 from whisper import load_model
 import time
 
 class Models:
-
     def __init__(self, whisper_model_name="large", device=None, verbose=False):
         self.whisper_model_name = whisper_model_name
         if device is None:
@@ -16,14 +13,20 @@ class Models:
         self._whisper_model = None
         self._pyannote_pipeline = None
 
-    def load_whisper_model(self, model_name):
-
-        del self._whisper_model
+    def load_whisper_model(self, model_name=None):
+        if model_name is None:
+            model_name = self.whisper_model_name
+        
+        if self._whisper_model is not None:
+            self._whisper_model = None
+        
         self._whisper_model = load_model(model_name, device=self.device)
 
-    def load_pyannote_pipeline(self):
+    def load_pyannote_pipeline(self, model_name="pyannote/speaker-diarization-3.1"):
         from pyannote.audio import Pipeline
-        self._pyannote_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization@2.1.1")
+        self._pyannote_pipeline = Pipeline.from_pretrained(model_name)
+        if self.device == "cuda":
+            self._pyannote_pipeline = self._pyannote_pipeline.to(torch.device(0))
     
     @property
     def whisper_model(self):
