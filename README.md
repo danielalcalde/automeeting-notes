@@ -24,7 +24,10 @@ A Python web UI for generating speaker-diarized meeting transcriptions from audi
     ./install.sh
     
     ```
-    
+- Accepting eula from pyannote in hf.co in [pyannote/segmentation-3.0](https://huggingface.co/pyannote/segmentation-3.0) and [pyannote/speaker-diarization-3.1](https://huggingface.co/pyannote/speaker-diarization-3.1) and add your huggingface token with:
+    ```sh
+    huggingface-cli login
+    ``` 
 
 ## Usage Instructions
 
