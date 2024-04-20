@@ -1,7 +1,7 @@
 import torch
 from whisper.transcribe import transcribe as transcribe_whisper
 from .whisper_extension import transcribe
-from .core import change_speaker_timestamps
+from .core import speaker_transition_timestamps
 from whisper import load_model
 import time
 
@@ -55,7 +55,7 @@ class Models:
         if diarization is None:
             res = transcribe_whisper(self.whisper_model, audio_path, temperature=temperature, **kwargs)
         else:
-            cut_timestamps = change_speaker_timestamps(diarization)
+            cut_timestamps = speaker_transition_timestamps(diarization)
             res = transcribe(self.whisper_model, audio_path, cut_timestamps, temperature=temperature, **kwargs)
         
         if self.verbose:

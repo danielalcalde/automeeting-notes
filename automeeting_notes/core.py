@@ -98,15 +98,33 @@ def merge_grouped_sentences(sentence_group):
 def diarize_text(transcribe_res, diarization_result):
     """
     Diarizes the text from a transcription.
+    Parameters
+    ----------
+    transcribe_res : dict
+        The transcription result.
+    diarization_result : pyannote.core.Annotation
+        The diarization result.
+    Returns
+    -------
+    list
+        A list of tuples with time range, speaker, and text information.
     """
     timed_segments = obtain_timed_text_segments(transcribe_res)
     spk_segment = allocate_speaker_to_segments(timed_segments, diarization_result)
     processed_res = consolidate_sentences(spk_segment)
     return processed_res
 
-def change_speaker_timestamps(diarization):
+def speaker_transition_timestamps(diarization):
     """
     Get the timestamps where the speaker changes.
+    Parameters
+    ----------
+    diarization : pyannote.core.Annotation
+        The diarization result.
+    Returns
+    -------
+    list
+        A list of timestamps where the speaker changes.
     """
     timestamps = []
     current_speaker = None
