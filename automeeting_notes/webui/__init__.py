@@ -24,8 +24,8 @@ def transcribe_and_diarize(audio_path, verbose, model, transcript_format):
     args['verbose'] = verbose
     models.models.verbose = verbose
 
-    result = models.models.transcribe(audio_path, temperature=0.7, **args)
     diarization_result = models.models.diarize(audio_path)
+    result = models.models.transcribe(audio_path, temperature=0.7, diarization=diarization_result, **args)
 
     try:
         os.remove(audio_path)

@@ -67,14 +67,17 @@ def parse_arguments(args=None):
                         help="if the probability of the <|nospeech|> token is higher than this value AND the decoding has failed due to `logprob_threshold`, consider the segment as silence")
     parser.add_argument("--output_name", type=str, default="",
                         help="output file name; if not specified, the output file name will be the same as the input file name")
+    parser.add_argument("--parallel_diarization", type=str2bool, default=False,
+                        help="whether to perform diarization in parallel with transcription, is faster but may be less accurate")
 
     args = parser.parse_args(args).__dict__
     model_name = args.pop("model")
     output_dir = args.pop("output_dir")
     output_name = args.pop("output_name")
     overwrite_transcript = args.pop("overwrite_transcript")
+    parallel_diarization = args.pop("parallel_diarization")
 
-    return args, model_name, output_dir, output_name, overwrite_transcript
+    return args, model_name, output_dir, output_name, overwrite_transcript, parallel_diarization
 
 def extract_audio(audio):
     # Check if regex
@@ -97,7 +100,7 @@ def extract_audio(audio):
     return audio
 
 def main(args=None):
-    args, model_name, output_dir, output_name, overwrite_transcript = parse_arguments(args)
+    args, model_name, output_dir, output_name, overwrite_transcript, parallel_diarization = parse_arguments(args)
     os.makedirs(output_dir, exist_ok=True)
     models = Models(whisper_model_name=model_name, verbose=args["verbose"])
 
@@ -122,26 +125,36 @@ def main(args=None):
         if not overwrite_transcript and os.path.isfile(filepath_simple):
             print(f"Skipping {audio_path} as the transcript already exists.")
             continue
-        elif os.path.isfile(file_lock_name):
-            print(f"Skipping {audio_path} as it is locked.")
+
+        # Check if the file is locked
+        try:
+            file_lock.acquire(blocking=False)
+        except:
+            print(f"Skipping {audio_path} as it is locked by another process with {file_lock_name}.")
             continue
 
-        with file_lock:
-            #result = models.transcribe(audio_path, temperature=temperature, **args)
-            #diarization_result = models.diarize(audio_path)
-            # Do both at the same time with threading
+        
+        #result = models.transcribe(audio_path, temperature=temperature, **args)
+        #diarization_result = models.diarize(audio_path)
+        # Do both at the same time with threading
+        if parallel_diarization:
             with ThreadPoolExecutor(max_workers=2) as executor:
                 future1 = executor.submit(models.transcribe, audio_path, temperature, **args)
                 future2 = executor.submit(models.diarize, audio_path)
 
-                result = future1.result()
+                transcribe_result = future1.result()
                 diarization_result = future2.result()
-            
+        else:
+            diarization_result = models.diarize(audio_path)
+            transcribe_result = models.transcribe(audio_path, temperature=temperature, diarization=diarization_result, **args)
+        
 
-            res = diarize_text(result, diarization_result)
-            write_to_txt(res, filepath_simple, style="simple")
-            write_to_txt(res, filepath_timestamp, style="timestamp")
+        res = diarize_text(transcribe_result, diarization_result)
+        write_to_txt(res, filepath_simple, style="simple")
+        write_to_txt(res, filepath_timestamp, style="timestamp")
+
         # Remove the lock
+        file_lock.release()
         os.remove(file_lock_name)
 
 

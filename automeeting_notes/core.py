@@ -104,6 +104,22 @@ def diarize_text(transcribe_res, diarization_result):
     processed_res = consolidate_sentences(spk_segment)
     return processed_res
 
+def change_speaker_timestamps(diarization):
+    """
+    Get the timestamps where the speaker changes.
+    """
+    timestamps = []
+    current_speaker = None
+    for turn, _, speaker in diarization.itertracks(yield_label=True):
+        if current_speaker is None:
+            current_speaker = speaker
+        
+        if speaker != current_speaker:
+            timestamps.append((turn.start + previouse_turn.end)/2)
+            current_speaker = speaker
+        previouse_turn = turn
+
+    return timestamps
 
 # Create a function to convert the processed results into text
 def res_to_txt(res_processed, style="simple"):

@@ -1,5 +1,7 @@
 import torch
-from whisper.transcribe import transcribe
+from whisper.transcribe import transcribe as transcribe_whisper
+from .whisper_extension import transcribe
+from .core import change_speaker_timestamps
 from whisper import load_model
 import time
 
@@ -8,6 +10,7 @@ class Models:
         self.whisper_model_name = whisper_model_name
         if device is None:
             device = "cuda" if torch.cuda.is_available() else "cpu"
+        
         self.device = device
         self.verbose = verbose
         self._whisper_model = None
@@ -44,12 +47,16 @@ class Models:
             if self.verbose: print("Loaded Pyannote pipeline.")
         return self._pyannote_pipeline
     
-    def transcribe(self, audio_path, temperature=1.0, **kwargs):
+    def transcribe(self, audio_path, temperature=1.0, diarization=None, **kwargs):
         t0 = time.time()
         if self.verbose:
             print(f"Transcribing {audio_path} with {self.whisper_model_name} Whisper model...")
 
-        res = transcribe(self.whisper_model, audio_path, temperature=temperature, **kwargs)
+        if diarization is None:
+            res = transcribe_whisper(self.whisper_model, audio_path, temperature=temperature, **kwargs)
+        else:
+            cut_timestamps = change_speaker_timestamps(diarization)
+            res = transcribe(self.whisper_model, audio_path, cut_timestamps, temperature=temperature, **kwargs)
         
         if self.verbose:
             print(f"Transcribed in {time.time() - t0:.2f} seconds.")
